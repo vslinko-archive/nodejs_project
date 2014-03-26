@@ -1,0 +1,14 @@
+#!upstart
+description "Node.js Application Server"
+
+start on (local-filesystems and net-device-up IFACE!=lo)
+stop on [!12345]
+
+console log
+
+env NODE_ENV="production"
+env HOME=<%= node["etc"]["passwd"][node["nodejs_project"]["user"]]["dir"] %>
+setuid <%= node["nodejs_project"]["user"] %>
+setgid <%= node["nodejs_project"]["group"] %>
+chdir <%= node["nodejs_project"]["dir"] %>/project/<%= node["nodejs_project"]["build_dir"] %>
+exec /usr/bin/env <%= node["nodejs_project"]["build_system"] %>
